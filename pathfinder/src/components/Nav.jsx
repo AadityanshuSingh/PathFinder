@@ -25,6 +25,7 @@ import {
   setEraseWall,
 } from "../redux/Slices/cellSlice";
 import { setAlgorithm } from "../redux/Slices/algoSlice";
+import Dijkstra from "../algorithms/Dijkstra";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,8 @@ const Nav = () => {
         ? dfs(start, end, wallNode)
         : algorithm === "BFS"
         ? bfs(start, end, wallNode)
+        : algorithm === "Dijkstra"
+        ? Dijkstra(start, end, wallNode)
         : { visited: [], path: [] };
     console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
@@ -132,7 +135,13 @@ const Nav = () => {
             Algorithms
           </MenuButton>
           <MenuList color={"gray.300"} bg={"gray.600"} border={0}>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.700" }}
+              onClick={() => {
+                dispatch(setAlgorithm("Dijkstra"));
+              }}
+            >
               Dijkstra's Algorithm
             </MenuItem>
             <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>

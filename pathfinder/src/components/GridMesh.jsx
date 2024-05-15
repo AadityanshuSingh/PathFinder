@@ -7,13 +7,21 @@ import startLeftSvg from "../assets/triangletwo-left.svg";
 import startUpSvg from "../assets/triangletwo-up.svg";
 import startDownSvg from "../assets/triangletwo-down.svg";
 import endSvg from "../assets/circle.svg";
-import { setEnd, setStart } from "../redux/Slices/cellSlice";
+import {
+  addWall,
+  removeWall,
+  setEnd,
+  setStart,
+} from "../redux/Slices/cellSlice";
 
 const GridMesh = () => {
   const rows = [];
   const [startNode, setStartNode] = useState(false);
   const [endNode, setEndNode] = useState(false);
-  const { start, end } = useSelector((state) => state.cell);
+  const [mouseDown, setMouseDown] = useState(false);
+  const { start, end, editWall, editWeight, eraseWall } = useSelector(
+    (state) => state.cell
+  );
   const dispatch = useDispatch();
 
   const startImg =
@@ -33,13 +41,45 @@ const GridMesh = () => {
     } else if (startNode) {
       // console.log("start", [row, col], "end", end);
       dispatch(setStart([row, col]));
+      dispatch(removeWall({ row: row, col: col }));
+      const element = document.getElementById(`${row}-${col}`);
+      element.style.animation = "none";
+      element.style.backgroundColor = "white";
       setStartNode(false);
     }
     if (endNode && row === start[0] && col === start[1]) {
       return;
     } else if (endNode) {
       dispatch(setEnd([row, col]));
+      dispatch(removeWall({ row: row, col: col }));
+      const element = document.getElementById(`${row}-${col}`);
+      element.style.animation = "none";
+      element.style.backgroundColor = "white";
       setEndNode(false);
+    }
+
+    if (eraseWall) {
+      dispatch(removeWall({ row: row, col: col }));
+      const element = document.getElementById(`${row}-${col}`);
+      element.style.animation = "none";
+      element.style.backgroundColor = "white";
+    }
+  };
+
+  const handleWallWeightCreation = (e) => {
+    if (startNode || endNode) return;
+    const [row, col] = e;
+    // console.log(e);
+    if (
+      (row === start[0] && col === start[1]) ||
+      (row === end[0] && col === end[1])
+    )
+      return;
+    if (mouseDown && editWall) {
+      const element = document.getElementById(`${row}-${col}`);
+      element.style.animation = "animateWall 0.2s linear";
+      element.style.backgroundColor = "#2e325b";
+      dispatch(addWall({ row: e[0], col: e[1] }));
     }
   };
 
@@ -57,6 +97,9 @@ const GridMesh = () => {
           borderWidth={"thin"}
           borderColor={"blue.200"}
           onClick={handleClick}
+          onMouseDown={() => setMouseDown(true)}
+          onMouseUp={() => setMouseDown(false)}
+          onMouseMove={() => handleWallWeightCreation([i, j])}
         >
           {i === start[0] && j === start[1] ? (
             <Image

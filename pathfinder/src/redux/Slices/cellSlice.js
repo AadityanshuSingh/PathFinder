@@ -5,10 +5,14 @@ export const cellSlice = createSlice({
   initialState: {
     start: [10, 10],
     end: [4, 46],
-    walls: new Map(),
-    weights: new Set(),
+    walls: [],
+    weights: [],
     visitedNodes: [],
     path: [],
+    editWall: false,
+    editWeight: false,
+    eraseWall: false,
+    eraseWeight: false,
   },
   reducers: {
     setStart: (state, action) => {
@@ -21,14 +25,24 @@ export const cellSlice = createSlice({
       state.walls.push(action.payload);
     },
     removeWall: (state, action) => {
-      state.walls = state.walls.filter((wall) => wall !== action.payload);
+      const { row, col } = action.payload;
+      state.walls = state.walls.filter(
+        (wall) => wall.row !== row || wall.col !== col
+      );
+    },
+    eraseWall: (state) => {
+      state.walls = [];
+    },
+    eraseWeight: (state) => {
+      state.weights = [];
     },
     addWeight: (state, action) => {
       state.weights.push(action.payload);
     },
     removeWeight: (state, action) => {
+      const { row, col } = action.payload;
       state.weights = state.weights.filter(
-        (weight) => weight !== action.payload
+        (weight) => weight.row !== row || weight.col !== col
       );
     },
     setVisitedNodes: (state, action) => {
@@ -36,6 +50,18 @@ export const cellSlice = createSlice({
     },
     setPath: (state, action) => {
       state.path = action.payload;
+    },
+    setEditWall: (state, action) => {
+      state.editWall = action.payload;
+    },
+    setEditWeight: (state, action) => {
+      state.editWeight = action.payload;
+    },
+    setEraseWall: (state, action) => {
+      state.eraseWall = action.payload;
+    },
+    setEraseWeight: (state, action) => {
+      state.eraseWeight = action.payload;
     },
   },
 });
@@ -49,6 +75,12 @@ export const {
   setEnd,
   setVisitedNodes,
   setPath,
+  setEditWall,
+  setEditWeight,
+  eraseWall,
+  eraseWeight,
+  setEraseWall,
+  setEraseWeight,
 } = cellSlice.actions;
 
 export default cellSlice.reducer;

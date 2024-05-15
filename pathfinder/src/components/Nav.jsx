@@ -14,11 +14,21 @@ import logo from "../assets/image.png";
 import React from "react";
 import bfs from "../algorithms/bfs";
 import { useDispatch, useSelector } from "react-redux";
-import { setVisitedNodes, setPath } from "../redux/Slices/cellSlice";
+import {
+  setVisitedNodes,
+  setPath,
+  setEditWall,
+  setEditWeight,
+  eraseWall,
+  eraseWeight,
+  setEraseWall,
+} from "../redux/Slices/cellSlice";
 
 const Nav = () => {
   const dispatch = useDispatch();
-  const { visitedNodes, start, end } = useSelector((state) => state.cell);
+  const { visitedNodes, start, end, walls } = useSelector(
+    (state) => state.cell
+  );
 
   const handleVisualize = () => {
     for (let cell of visitedNodes) {
@@ -26,13 +36,39 @@ const Nav = () => {
       element.style.backgroundColor = "white";
       element.style.animation = "none";
     }
+    dispatch(setEditWall(false));
+    dispatch(setEditWeight(false));
+    dispatch(setEraseWall(false));
     dispatch(setVisitedNodes([]));
     dispatch(setPath([]));
-    const result = bfs(start, end);
+    console.log(walls);
+    const wallNode = new Set();
+    for (let wall of walls) {
+      wallNode.add(`${wall.row}-${wall.col}`);
+    }
+    const result = bfs(start, end, wallNode);
     console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
     dispatch(setPath(result.path));
     // console.log(result.path);
+  };
+
+  const clearWalls = () => {
+    for (let wall of walls) {
+      const element = document.getElementById(`${wall.row}-${wall.col}`);
+      element.style.backgroundColor = "white";
+      element.style.animation = "none";
+    }
+    dispatch(setEditWall(false));
+    dispatch(setEditWeight(false));
+    dispatch(setEraseWall(false));
+    dispatch(eraseWall());
+  };
+
+  const eraseWalls = () => {
+    dispatch(setEditWall(false));
+    dispatch(setEditWeight(false));
+    dispatch(setEraseWall(true));
   };
 
   const clearBoard = () => {
@@ -43,6 +79,11 @@ const Nav = () => {
         element.style.animation = "none";
       }
     }
+    dispatch(setEditWall(false));
+    dispatch(setEditWeight(false));
+    dispatch(eraseWall());
+    dispatch(eraseWeight());
+    dispatch(setEraseWall(false));
     dispatch(setVisitedNodes([]));
     dispatch(setPath([]));
   };
@@ -70,6 +111,7 @@ const Nav = () => {
         </Text>
       </HStack>
       <HStack w={"100%"} mb={4} pl={4}>
+        {/* Algorithms */}
         <Menu>
           <MenuButton
             as={Button}
@@ -96,7 +138,7 @@ const Nav = () => {
             </MenuItem>
           </MenuList>
         </Menu>
-
+        {/* Mazes & Patterns */}
         <Menu>
           <MenuButton
             as={Button}
@@ -117,6 +159,54 @@ const Nav = () => {
             </MenuItem>
             <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
               Basic Weighted Maze
+            </MenuItem>
+          </MenuList>
+        </Menu>
+        {/* Walls & Weights */}
+        <Menu>
+          <MenuButton
+            as={Button}
+            rightIcon={<ChevronDownIcon />}
+            bg={"inherit"}
+            _hover={{ bg: "purple.600" }}
+            _active={{ bg: "purple.600" }}
+            color={"gray.300"}
+          >
+            Walls & Weights
+          </MenuButton>
+          <MenuList color={"gray.300"} bg={"gray.600"} border={0}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.800" }}
+              onClick={() => {
+                dispatch(setEditWall(true));
+                dispatch(setEditWeight(false));
+              }}
+            >
+              Add Walls
+            </MenuItem>
+            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.800" }}>
+              Add Weights
+            </MenuItem>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.800" }}
+              onClick={clearWalls}
+            >
+              Clear Walls
+            </MenuItem>
+            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.800" }}>
+              Clear Weights
+            </MenuItem>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.800" }}
+              onClick={eraseWalls}
+            >
+              Erase Walls
+            </MenuItem>
+            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.800" }}>
+              Erase Weights
             </MenuItem>
           </MenuList>
         </Menu>

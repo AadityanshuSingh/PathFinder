@@ -1,4 +1,4 @@
-function bfs(startNode, endNode) {
+function bfs(startNode, endNode, walls) {
   const graph = [];
   for (let i = 0; i < 20; i++) {
     const col = [];
@@ -32,7 +32,13 @@ function bfs(startNode, endNode) {
 
         // console.log(newRow, newCol);
 
-        if (newRow < 0 || newRow >= 20 || newCol < 0 || newCol >= 50) {
+        if (
+          newRow < 0 ||
+          newRow >= 20 ||
+          newCol < 0 ||
+          newCol >= 50 ||
+          walls.has(`${newRow}-${newCol}`)
+        ) {
           continue;
         }
         // if (graph[newRow][newCol].parent !== null) {

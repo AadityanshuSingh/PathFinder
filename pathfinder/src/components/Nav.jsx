@@ -13,6 +13,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import logo from "../assets/image.png";
 import React from "react";
 import bfs from "../algorithms/bfs";
+import dfs from "../algorithms/dfs";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setVisitedNodes,
@@ -23,12 +24,14 @@ import {
   eraseWeight,
   setEraseWall,
 } from "../redux/Slices/cellSlice";
+import { setAlgorithm } from "../redux/Slices/algoSlice";
 
 const Nav = () => {
   const dispatch = useDispatch();
   const { visitedNodes, start, end, walls } = useSelector(
     (state) => state.cell
   );
+  const { algorithm } = useSelector((state) => state.algo);
 
   const handleVisualize = () => {
     for (let cell of visitedNodes) {
@@ -46,7 +49,12 @@ const Nav = () => {
     for (let wall of walls) {
       wallNode.add(`${wall.row}-${wall.col}`);
     }
-    const result = bfs(start, end, wallNode);
+    const result =
+      algorithm === "DFS"
+        ? dfs(start, end, wallNode)
+        : algorithm === "BFS"
+        ? bfs(start, end, wallNode)
+        : { visited: [], path: [] };
     console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
     dispatch(setPath(result.path));
@@ -130,10 +138,22 @@ const Nav = () => {
             <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
               A* Algorithm
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.700" }}
+              onClick={() => {
+                dispatch(setAlgorithm("BFS"));
+              }}
+            >
               Breadth First Search
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.700" }}
+              onClick={() => {
+                dispatch(setAlgorithm("DFS"));
+              }}
+            >
               Depth First Search
             </MenuItem>
           </MenuList>

@@ -3,10 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 export const cellSlice = createSlice({
   name: "cell",
   initialState: {
-    start: null,
-    end: null,
-    walls: [],
-    weights: [],
+    start: [10, 10],
+    end: [4, 46],
+    walls: new Map(),
+    weights: new Set(),
     visitedNodes: [],
     path: [],
   },

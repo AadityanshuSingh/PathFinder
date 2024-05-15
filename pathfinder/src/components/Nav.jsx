@@ -1,6 +1,7 @@
 import {
   Button,
   HStack,
+  Image,
   Menu,
   MenuButton,
   MenuItem,
@@ -9,6 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import logo from "../assets/image.png";
 import React from "react";
 import bfs from "../algorithms/bfs";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +18,7 @@ import { setVisitedNodes, setPath } from "../redux/Slices/cellSlice";
 
 const Nav = () => {
   const dispatch = useDispatch();
-  const { visitedNodes } = useSelector((state) => state.cell);
+  const { visitedNodes, start, end } = useSelector((state) => state.cell);
 
   const handleVisualize = () => {
     for (let cell of visitedNodes) {
@@ -26,26 +28,47 @@ const Nav = () => {
     }
     dispatch(setVisitedNodes([]));
     dispatch(setPath([]));
-    const result = bfs([10, 30], [4, 46]);
+    const result = bfs(start, end);
     console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
     dispatch(setPath(result.path));
     // console.log(result.path);
   };
+
+  const clearBoard = () => {
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 50; j++) {
+        const element = document.getElementById(`${i}-${j}`);
+        element.style.backgroundColor = "white";
+        element.style.animation = "none";
+      }
+    }
+    dispatch(setVisitedNodes([]));
+    dispatch(setPath([]));
+  };
   return (
     <VStack w={"100%"} bg={"gray.800"} pl={2}>
-      <Text
-        w={"100%"}
-        fontSize={"xx-large"}
-        fontWeight={"extrabold"}
-        as={"b"}
-        bgGradient="linear(to-b, purple.100, purple.600)"
-        bgClip={"text"}
-        mt={1}
-        mb={2}
-      >
-        Pathfinder
-      </Text>
+      <HStack w={"100%"} ml={0} mt={2}>
+        <Image
+          src={logo}
+          height={"50px"}
+          w={"50px"}
+          ml={0}
+          borderRadius={"full"}
+        />
+        <Text
+          w={"100%"}
+          fontSize={"xx-large"}
+          fontWeight={"extrabold"}
+          as={"b"}
+          bgGradient="linear(to-b, purple.100, purple.600)"
+          bgClip={"text"}
+          mt={1}
+          mb={2}
+        >
+          Pathfinder
+        </Text>
+      </HStack>
       <HStack w={"100%"} mb={4} pl={4}>
         <Menu>
           <MenuButton
@@ -108,6 +131,7 @@ const Nav = () => {
           bg={"inherit"}
           _hover={{ color: "purple.500", bg: "inherit" }}
           color={"gray.300"}
+          onClick={clearBoard}
         >
           Clear Board
         </Button>

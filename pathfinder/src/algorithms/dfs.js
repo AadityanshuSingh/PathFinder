@@ -26,7 +26,7 @@ function traverseDFS(startNode, endNode, walls, visited, visitedMap, graph) {
         continue;
       }
       graph[newRow][newCol].parent = [startNode[0], startNode[1]];
-      return traverseDFS(
+      const flag = traverseDFS(
         [newRow, newCol],
         endNode,
         walls,
@@ -34,7 +34,13 @@ function traverseDFS(startNode, endNode, walls, visited, visitedMap, graph) {
         visitedMap,
         graph
       );
+      if (flag) {
+        return true;
+      }
     }
+  }
+  if (visitedMap.has(`${endNode[0]}, ${endNode[1]}`)) {
+    return true;
   }
   return false;
 }

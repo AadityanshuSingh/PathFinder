@@ -26,6 +26,7 @@ import {
 } from "../redux/Slices/cellSlice";
 import { setAlgorithm } from "../redux/Slices/algoSlice";
 import Dijkstra from "../algorithms/Dijkstra";
+import AStar from "../algorithms/AStar";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -57,6 +58,8 @@ const Nav = () => {
         ? bfs(start, end, wallNode)
         : algorithm === "Dijkstra"
         ? Dijkstra(start, end, wallNode)
+        : algorithm === "AStar"
+        ? AStar(start, end, wallNode)
         : { visited: [], path: [] };
     console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
@@ -144,7 +147,13 @@ const Nav = () => {
             >
               Dijkstra's Algorithm
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.700" }}
+              onClick={() => {
+                dispatch(setAlgorithm("AStar"));
+              }}
+            >
               A* Algorithm
             </MenuItem>
             <MenuItem

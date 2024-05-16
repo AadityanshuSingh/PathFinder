@@ -166,7 +166,7 @@ const GridMesh = () => {
       const element = document.getElementById(`${cell[0]}-${cell[1]}`);
       setTimeout(() => {
         element.style.backgroundColor = "#c572ff";
-      }, 10 * index2 + 100 * index);
+      }, 10 * index2 + 30 * index);
       index++;
     }
   }, [visitedNodes, path]);

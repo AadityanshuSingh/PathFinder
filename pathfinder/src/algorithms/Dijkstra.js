@@ -29,8 +29,8 @@ function Dijkstra(startNode, endNode, walls) {
     }
     const currentNode = minNode;
     queue.delete(`${currentNode[0]},${currentNode[1]}`);
-    console.log("queue", queue);
-    console.log("currentNode", currentNode);
+    // console.log("queue", queue);
+    // console.log("currentNode", currentNode);
 
     for (let i = -1; i <= 1; i++) {
       for (let j = -1; j <= 1; j++) {

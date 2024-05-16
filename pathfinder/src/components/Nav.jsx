@@ -23,10 +23,12 @@ import {
   eraseWall,
   eraseWeight,
   setEraseWall,
+  addWall,
 } from "../redux/Slices/cellSlice";
 import { setAlgorithm } from "../redux/Slices/algoSlice";
 import Dijkstra from "../algorithms/Dijkstra";
 import AStar from "../algorithms/AStar";
+import recursiveDivision from "../mazes/RecursiveDivision";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -46,7 +48,7 @@ const Nav = () => {
     dispatch(setEraseWall(false));
     dispatch(setVisitedNodes([]));
     dispatch(setPath([]));
-    console.log(walls);
+    // console.log(walls);
     const wallNode = new Set();
     for (let wall of walls) {
       wallNode.add(`${wall.row}-${wall.col}`);
@@ -101,6 +103,26 @@ const Nav = () => {
     dispatch(setVisitedNodes([]));
     dispatch(setPath([]));
   };
+
+  const createMaze = () => {
+    clearBoard();
+    const wallNodes = new Map();
+    const rowMap = new Map();
+    const colMap = new Map();
+    recursiveDivision(start, end, 0, 19, 0, 49, wallNodes, rowMap, colMap);
+
+    console.log(walls);
+    let index = 1;
+    for (let node of wallNodes.values()) {
+      dispatch(addWall({ row: node.row, col: node.col }));
+      setTimeout(() => {
+        const element = document.getElementById(`${node.row}-${node.col}`);
+        element.style.backgroundColor = "#2e325b";
+        element.style.animation = "animateWall 1s linear";
+      }, 10 * index++);
+    }
+  };
+
   return (
     <VStack w={"100%"} bg={"gray.800"} pl={2}>
       <HStack w={"100%"} ml={0} mt={2}>
@@ -189,7 +211,11 @@ const Nav = () => {
             Mazes & Patterns
           </MenuButton>
           <MenuList color={"gray.300"} bg={"gray.600"} border={0}>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.700" }}
+              onClick={createMaze}
+            >
               Recursive Division
             </MenuItem>
             <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>

@@ -178,7 +178,7 @@ const Nav = () => {
 
     for (let weight of weightNodes.values()) {
       const element = document.getElementById(`${weight.row}-${weight.col}`);
-      element.style.backgroundImage = weightImg;
+      element.style.backgroundImage = imageUrl;
       console.log("image", imageUrl);
       element.style.animation = "animateWeight 1s linear";
       dispatch(addWeight({ row: weight.row, col: weight.col }));

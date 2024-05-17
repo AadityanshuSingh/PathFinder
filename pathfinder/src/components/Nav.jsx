@@ -137,9 +137,13 @@ const Nav = () => {
     const wallNodes = new Map();
     const rowMap = new Map();
     const colMap = new Map();
-    recursiveDivision(start, end, 0, 19, 0, 49, wallNodes, rowMap, colMap);
+    recursiveDivision(start, end, 0, 19, 0, 49, wallNodes, null, null);
+    const result = new Set();
+    for (let wall of wallNodes.values()) {
+      result.add(`${wall.row}-${wall.col}`);
+    }
 
-    console.log(walls);
+    // console.log(walls);
     let index = 1;
     for (let node of wallNodes.values()) {
       dispatch(addWall({ row: node.row, col: node.col }));

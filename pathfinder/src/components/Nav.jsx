@@ -6,12 +6,17 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
   Text,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import logo from "../assets/image.png";
-import React from "react";
+import React, { useState } from "react";
 import bfs from "../algorithms/bfs";
 import dfs from "../algorithms/dfs";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,11 +30,14 @@ import {
   setEraseWall,
   addWall,
   setEraseWeight,
+  addWeight,
 } from "../redux/Slices/cellSlice";
 import { setAlgorithm } from "../redux/Slices/algoSlice";
 import Dijkstra from "../algorithms/Dijkstra";
 import AStar from "../algorithms/AStar";
 import recursiveDivision from "../mazes/RecursiveDivision";
+import WeightedMaze from "../mazes/WeightedMaze";
+import weightImg from "../assets/weight.svg";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -37,6 +45,9 @@ const Nav = () => {
     (state) => state.cell
   );
   const { algorithm } = useSelector((state) => state.algo);
+
+  const [sliderVal, setSliderVal] = useState(0.3);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const handleVisualize = () => {
     for (let cell of visitedNodes) {
@@ -155,6 +166,19 @@ const Nav = () => {
     }
   };
 
+  const createWeightedMaze = () => {
+    clearBoard();
+    const weightNodes = new Map();
+    WeightedMaze(weightNodes, start, end, sliderVal);
+
+    for (let weight of weightNodes.values()) {
+      const element = document.getElementById(`${weight.row}-${weight.col}`);
+      element.style.backgroundImage = `url(${weightImg})`;
+      element.style.animation = "animateWeight 1s linear";
+      dispatch(addWeight({ row: weight.row, col: weight.col }));
+    }
+  };
+
   return (
     <VStack w={"100%"} bg={"gray.800"} pl={2}>
       <HStack w={"100%"} ml={0} mt={2}>
@@ -250,11 +274,40 @@ const Nav = () => {
             >
               Recursive Division
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
-              Basic Random Maze
-            </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.700" }}>
-              Basic Weighted Maze
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.700" }}
+              onClick={createWeightedMaze}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <VStack mb={4} mt={2} gap={3} p={0}>
+                <Text ml={2}>Weighted Maze</Text>
+                <Slider
+                  defaultValue={0.3}
+                  min={0.1}
+                  max={0.8}
+                  step={0.01}
+                  onChange={(val) => {
+                    setSliderVal(val);
+                  }}
+                >
+                  <SliderTrack bg={"purple.300"}>
+                    <SliderFilledTrack bg={"purple.500"} />
+                  </SliderTrack>
+                  <Tooltip
+                    hasArrow
+                    bg={"purple.500"}
+                    color={"white"}
+                    label={`Density: ${sliderVal * 100}%`}
+                    placement={"top"}
+                    isOpen={showTooltip}
+                  >
+                    <SliderThumb />
+                  </Tooltip>
+                </Slider>
+                <Text fontSize={"smaller"}>(Set Density of Weights)</Text>
+              </VStack>
             </MenuItem>
           </MenuList>
         </Menu>
@@ -271,26 +324,42 @@ const Nav = () => {
             Walls & Weights
           </MenuButton>
           <MenuList color={"gray.300"} bg={"gray.600"} border={0}>
-            <MenuItem
-              bg={"gray.600"}
-              _hover={{ bg: "gray.800" }}
-              onClick={() => {
-                dispatch(setEditWall(true));
-                dispatch(setEditWeight(false));
-              }}
+            <Tooltip
+              hasArrow
+              placement="auto"
+              label={
+                "Select to add walls. Multiple walls will be created when the mouse is down and it is present over any cell."
+              }
             >
-              Add Walls
-            </MenuItem>
-            <MenuItem
-              bg={"gray.600"}
-              _hover={{ bg: "gray.800" }}
-              onClick={() => {
-                dispatch(setEditWeight(true));
-                dispatch(setEditWall(false));
-              }}
+              <MenuItem
+                bg={"gray.600"}
+                _hover={{ bg: "gray.800" }}
+                onClick={() => {
+                  dispatch(setEditWall(true));
+                  dispatch(setEditWeight(false));
+                }}
+              >
+                Add Walls
+              </MenuItem>
+            </Tooltip>
+            <Tooltip
+              hasArrow
+              placement="auto"
+              label={
+                "Select to add weights. Multiple weights will be created when the mouse is down and it is present over any cell."
+              }
             >
-              Add Weights
-            </MenuItem>
+              <MenuItem
+                bg={"gray.600"}
+                _hover={{ bg: "gray.800" }}
+                onClick={() => {
+                  dispatch(setEditWeight(true));
+                  dispatch(setEditWall(false));
+                }}
+              >
+                Add Weights
+              </MenuItem>
+            </Tooltip>
             <MenuItem
               bg={"gray.600"}
               _hover={{ bg: "gray.800" }}
@@ -305,20 +374,32 @@ const Nav = () => {
             >
               Clear Weights
             </MenuItem>
-            <MenuItem
-              bg={"gray.600"}
-              _hover={{ bg: "gray.800" }}
-              onClick={eraseWalls}
+            <Tooltip
+              hasArrow
+              placement="auto"
+              label={"Click on a wall to erase it."}
             >
-              Erase Walls
-            </MenuItem>
-            <MenuItem
-              bg={"gray.600"}
-              _hover={{ bg: "gray.800" }}
-              onClick={eraseWeights}
+              <MenuItem
+                bg={"gray.600"}
+                _hover={{ bg: "gray.800" }}
+                onClick={eraseWalls}
+              >
+                Erase Walls
+              </MenuItem>
+            </Tooltip>
+            <Tooltip
+              hasArrow
+              placement="auto"
+              label={"Click on a weight to erase it."}
             >
-              Erase Weights
-            </MenuItem>
+              <MenuItem
+                bg={"gray.600"}
+                _hover={{ bg: "gray.800" }}
+                onClick={eraseWeights}
+              >
+                Erase Weights
+              </MenuItem>
+            </Tooltip>
           </MenuList>
         </Menu>
         <Button

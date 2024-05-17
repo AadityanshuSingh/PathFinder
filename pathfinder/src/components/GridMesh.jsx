@@ -1,4 +1,4 @@
-import { Box, Card, Image } from "@chakra-ui/react";
+import { Box, Card, Image, Tooltip } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../App.css";
@@ -116,38 +116,54 @@ const GridMesh = () => {
           onMouseMove={() => handleWallWeightCreation([i, j])}
         >
           {i === start[0] && j === start[1] ? (
-            <Image
-              src={startImg}
-              id={`${i}-${j}`}
-              w={"100%"}
-              h={"100%"}
-              _hover={{ cursor: "pointer" }}
-              onClick={() => {
-                if (!endNode) {
-                  setStartNode(true);
-                  dispatch(setStart([-1, -1]));
-                } else {
-                  return;
-                }
-              }}
-            />
+            <Tooltip
+              hasArrow
+              label={
+                "This is the source node. Click on it to pick it up and Select any cell to set it as source node."
+              }
+              placement="auto"
+            >
+              <Image
+                src={startImg}
+                id={`${i}-${j}`}
+                w={"100%"}
+                h={"100%"}
+                _hover={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (!endNode) {
+                    setStartNode(true);
+                    dispatch(setStart([-1, -1]));
+                  } else {
+                    return;
+                  }
+                }}
+              />
+            </Tooltip>
           ) : null}
           {i === end[0] && j === end[1] ? (
-            <Image
-              src={endSvg}
-              id={`${i}-${j}`}
-              w={"100%"}
-              h={"100%"}
-              _hover={{ cursor: "pointer" }}
-              onClick={() => {
-                if (!startNode) {
-                  setEndNode(true);
-                  dispatch(setEnd([-1, -1]));
-                } else {
-                  return;
-                }
-              }}
-            />
+            <Tooltip
+              hasArrow
+              label={
+                "This is the Target node. Click on it to pick it up and Select any cell to set it as source node."
+              }
+              placement="auto"
+            >
+              <Image
+                src={endSvg}
+                id={`${i}-${j}`}
+                w={"100%"}
+                h={"100%"}
+                _hover={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (!startNode) {
+                    setEndNode(true);
+                    dispatch(setEnd([-1, -1]));
+                  } else {
+                    return;
+                  }
+                }}
+              />
+            </Tooltip>
           ) : null}
         </Box>
       );

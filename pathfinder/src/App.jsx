@@ -4,6 +4,7 @@ import Nav from "./components/Nav";
 import GridMesh from "./components/GridMesh";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import Description from "./components/Description";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         }}
       >
         <Nav />
+        <Description />
         <GridMesh />
       </Card>
     </Provider>

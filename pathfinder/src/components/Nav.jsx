@@ -37,7 +37,6 @@ import Dijkstra from "../algorithms/Dijkstra";
 import AStar from "../algorithms/AStar";
 import recursiveDivision from "../mazes/RecursiveDivision";
 import WeightedMaze from "../mazes/WeightedMaze";
-import weightImg from "../assets/weight.svg";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -173,7 +172,7 @@ const Nav = () => {
 
     for (let weight of weightNodes.values()) {
       const element = document.getElementById(`${weight.row}-${weight.col}`);
-      element.style.backgroundImage = `url(${weightImg})`;
+      element.style.backgroundImage = `url(/src/assets/weight.svg)`;
       element.style.animation = "animateWeight 1s linear";
       dispatch(addWeight({ row: weight.row, col: weight.col }));
     }

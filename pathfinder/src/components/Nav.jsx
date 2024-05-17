@@ -37,6 +37,7 @@ import Dijkstra from "../algorithms/Dijkstra";
 import AStar from "../algorithms/AStar";
 import recursiveDivision from "../mazes/RecursiveDivision";
 import WeightedMaze from "../mazes/WeightedMaze";
+import weightImg from "../assets/weight.svg";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -165,19 +166,24 @@ const Nav = () => {
     }
   };
 
+  const getImageUrl = (imageName) => {
+    return new URL(`../assets/${imageName}`, import.meta.url).href;
+  };
+
   const createWeightedMaze = () => {
     clearBoard();
     const weightNodes = new Map();
     WeightedMaze(weightNodes, start, end, sliderVal);
+    const imageUrl = getImageUrl("weight.svg");
 
     for (let weight of weightNodes.values()) {
       const element = document.getElementById(`${weight.row}-${weight.col}`);
-      element.style.backgroundImage = `url(/src/assets/weight.svg)`;
+      element.style.backgroundImage = `url(${imageUrl})`;
+      console.log("image", imageUrl);
       element.style.animation = "animateWeight 1s linear";
       dispatch(addWeight({ row: weight.row, col: weight.col }));
     }
   };
-
   return (
     <VStack w={"100%"} bg={"gray.800"} pl={2}>
       <HStack w={"100%"} ml={0} mt={2}>

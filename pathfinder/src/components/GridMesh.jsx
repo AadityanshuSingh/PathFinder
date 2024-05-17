@@ -7,9 +7,12 @@ import startLeftSvg from "../assets/triangletwo-left.svg";
 import startUpSvg from "../assets/triangletwo-up.svg";
 import startDownSvg from "../assets/triangletwo-down.svg";
 import endSvg from "../assets/circle.svg";
+import weightImg from "../assets/weight.svg";
 import {
   addWall,
+  addWeight,
   removeWall,
+  removeWeight,
   setEnd,
   setStart,
 } from "../redux/Slices/cellSlice";
@@ -19,9 +22,8 @@ const GridMesh = () => {
   const [startNode, setStartNode] = useState(false);
   const [endNode, setEndNode] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
-  const { start, end, editWall, editWeight, eraseWall } = useSelector(
-    (state) => state.cell
-  );
+  const { start, end, editWall, editWeight, eraseWall, eraseWeight } =
+    useSelector((state) => state.cell);
   const dispatch = useDispatch();
 
   const startImg =
@@ -64,6 +66,12 @@ const GridMesh = () => {
       element.style.animation = "none";
       element.style.backgroundColor = "white";
     }
+    if (eraseWeight) {
+      dispatch(removeWeight({ row: row, col: col }));
+      const element = document.getElementById(`${row}-${col}`);
+      element.style.animation = "none";
+      element.style.backgroundColor = "white";
+    }
   };
 
   const handleWallWeightCreation = (e) => {
@@ -80,6 +88,12 @@ const GridMesh = () => {
       element.style.animation = "animateWall 0.2s linear";
       element.style.backgroundColor = "#2e325b";
       dispatch(addWall({ row: e[0], col: e[1] }));
+    }
+    if (mouseDown && editWeight) {
+      const element = document.getElementById(`${row}-${col}`);
+      element.style.animation = "animateWeight 0.2s linear";
+      element.style.backgroundImage = `url(${weightImg})`;
+      dispatch(addWeight({ row: e[0], col: e[1] }));
     }
   };
 

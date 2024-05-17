@@ -1,4 +1,12 @@
-function traverse(startNode, endNode, walls, visited, visitedMap, graph) {
+function traverse(
+  startNode,
+  endNode,
+  walls,
+  weights,
+  visited,
+  visitedMap,
+  graph
+) {
   if (startNode[0] === endNode[0] && startNode[1] === endNode[1]) {
     visited.add([startNode[0], startNode[1]]);
     visitedMap.set(`${startNode[0]}, ${startNode[1]}`, true);
@@ -58,12 +66,13 @@ function traverse(startNode, endNode, walls, visited, visitedMap, graph) {
         ) {
           continue;
         }
+        const weight = weights.has(`${newRow}-${newCol}`) ? 10 : 1;
         if (
           graph[newRow][newCol].distance >
-          graph[currentNode[0]][currentNode[1]].distance + 1
+          graph[currentNode[0]][currentNode[1]].distance + weight
         ) {
           graph[newRow][newCol].distance =
-            graph[currentNode[0]][currentNode[1]].distance + 1;
+            graph[currentNode[0]][currentNode[1]].distance + weight;
           graph[newRow][newCol].parent = [currentNode[0], currentNode[1]];
           queue.set(`${newRow},${newCol}`, [newRow, newCol]);
           //   console.log("queue", queue);
@@ -82,7 +91,7 @@ function traverse(startNode, endNode, walls, visited, visitedMap, graph) {
   return false;
 }
 
-function AStar(startNode, endNode, walls) {
+function AStar(startNode, endNode, walls, weights) {
   const graph = [];
   for (let i = 0; i < 20; i++) {
     const col = [];
@@ -105,7 +114,15 @@ function AStar(startNode, endNode, walls) {
 
   graph[startNode[0]][startNode[1]].distance = 0;
 
-  const flag = traverse(startNode, endNode, walls, visited, visitedMap, graph);
+  const flag = traverse(
+    startNode,
+    endNode,
+    walls,
+    weights,
+    visited,
+    visitedMap,
+    graph
+  );
 
   if (flag) {
     const path = [];

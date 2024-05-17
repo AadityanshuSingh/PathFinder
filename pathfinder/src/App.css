@@ -43,3 +43,18 @@
     animation-timing-function: linear;
   }
 }
+
+@keyframes animateWeight {
+  0% {
+    scale: 0;
+    animation-timing-function: linear;
+  }
+  50% {
+    scale: 1.2;
+    animation-timing-function: linear;
+  }
+  100% {
+    scale: 1;
+    animation-timing-function: linear;
+  }
+}

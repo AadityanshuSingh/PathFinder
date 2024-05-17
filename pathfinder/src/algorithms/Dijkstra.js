@@ -1,4 +1,4 @@
-function Dijkstra(startNode, endNode, walls) {
+function Dijkstra(startNode, endNode, walls, weights) {
   const graph = [];
   for (let i = 0; i < 20; i++) {
     const col = [];
@@ -49,12 +49,13 @@ function Dijkstra(startNode, endNode, walls) {
         ) {
           continue;
         }
+        const weight = weights.has(`${newRow}-${newCol}`) ? 10 : 1;
         if (
           graph[newRow][newCol].distance >
-          graph[currentNode[0]][currentNode[1]].distance + 1
+          graph[currentNode[0]][currentNode[1]].distance + weight
         ) {
           graph[newRow][newCol].distance =
-            graph[currentNode[0]][currentNode[1]].distance + 1;
+            graph[currentNode[0]][currentNode[1]].distance + weight;
           graph[newRow][newCol].parent = [currentNode[0], currentNode[1]];
           queue.set(`${newRow},${newCol}`, [newRow, newCol]);
           visited.add([newRow, newCol]);

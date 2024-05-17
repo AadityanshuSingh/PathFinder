@@ -24,6 +24,7 @@ import {
   eraseWeight,
   setEraseWall,
   addWall,
+  setEraseWeight,
 } from "../redux/Slices/cellSlice";
 import { setAlgorithm } from "../redux/Slices/algoSlice";
 import Dijkstra from "../algorithms/Dijkstra";
@@ -32,7 +33,7 @@ import recursiveDivision from "../mazes/RecursiveDivision";
 
 const Nav = () => {
   const dispatch = useDispatch();
-  const { visitedNodes, start, end, walls } = useSelector(
+  const { visitedNodes, start, end, walls, weights } = useSelector(
     (state) => state.cell
   );
   const { algorithm } = useSelector((state) => state.algo);
@@ -50,18 +51,24 @@ const Nav = () => {
     dispatch(setPath([]));
     // console.log(walls);
     const wallNode = new Set();
+    const weightNode = new Set();
     for (let wall of walls) {
       wallNode.add(`${wall.row}-${wall.col}`);
     }
+
+    for (let weight of weights) {
+      weightNode.add(`${weight.row}-${weight.col}`);
+    }
+    // console.log("weights", weightNode);
     const result =
       algorithm === "DFS"
         ? dfs(start, end, wallNode)
         : algorithm === "BFS"
         ? bfs(start, end, wallNode)
         : algorithm === "Dijkstra"
-        ? Dijkstra(start, end, wallNode)
+        ? Dijkstra(start, end, wallNode, weightNode)
         : algorithm === "AStar"
-        ? AStar(start, end, wallNode)
+        ? AStar(start, end, wallNode, weightNode)
         : { visited: [], path: [] };
     console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
@@ -81,10 +88,30 @@ const Nav = () => {
     dispatch(eraseWall());
   };
 
+  const clearWeights = () => {
+    for (let weight of weights) {
+      const element = document.getElementById(`${weight.row}-${weight.col}`);
+      element.style.backgroundColor = "white";
+      element.style.backgroundImage = "none";
+      element.style.animation = "none";
+    }
+
+    dispatch(setEditWall(false));
+    dispatch(setEditWeight(false));
+    dispatch(setEraseWeight(false));
+    dispatch(eraseWeight());
+  };
+
   const eraseWalls = () => {
     dispatch(setEditWall(false));
     dispatch(setEditWeight(false));
     dispatch(setEraseWall(true));
+  };
+
+  const eraseWeights = () => {
+    dispatch(setEditWall(false));
+    dispatch(setEditWeight(false));
+    dispatch(setEraseWeight(true));
   };
 
   const clearBoard = () => {
@@ -92,6 +119,7 @@ const Nav = () => {
       for (let j = 0; j < 50; j++) {
         const element = document.getElementById(`${i}-${j}`);
         element.style.backgroundColor = "white";
+        element.style.backgroundImage = "none";
         element.style.animation = "none";
       }
     }
@@ -249,7 +277,14 @@ const Nav = () => {
             >
               Add Walls
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.800" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.800" }}
+              onClick={() => {
+                dispatch(setEditWeight(true));
+                dispatch(setEditWall(false));
+              }}
+            >
               Add Weights
             </MenuItem>
             <MenuItem
@@ -259,7 +294,11 @@ const Nav = () => {
             >
               Clear Walls
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.800" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.800" }}
+              onClick={clearWeights}
+            >
               Clear Weights
             </MenuItem>
             <MenuItem
@@ -269,7 +308,11 @@ const Nav = () => {
             >
               Erase Walls
             </MenuItem>
-            <MenuItem bg={"gray.600"} _hover={{ bg: "gray.800" }}>
+            <MenuItem
+              bg={"gray.600"}
+              _hover={{ bg: "gray.800" }}
+              onClick={eraseWeights}
+            >
               Erase Weights
             </MenuItem>
           </MenuList>

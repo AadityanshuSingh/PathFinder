@@ -134,7 +134,6 @@ const Nav = () => {
         ) {
           const element = document.getElementById(`${i}-${j}`);
           element.style.backgroundColor = "white";
-          element.style.backgroundImage = "none";
           element.style.animation = "none";
           continue;
         }

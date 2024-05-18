@@ -7,7 +7,7 @@ import startLeftSvg from "../assets/triangletwo-left.svg";
 import startUpSvg from "../assets/triangletwo-up.svg";
 import startDownSvg from "../assets/triangletwo-down.svg";
 import endSvg from "../assets/circle.svg";
-import weightImg from "../assets/weight.svg";
+import weightImg from "../../public/weight.svg";
 import {
   addWall,
   addWeight,
@@ -74,8 +74,8 @@ const GridMesh = () => {
     }
   };
 
-  const getImageUrl = (imageName) => {
-    return new URL(`../assets/${imageName}`, import.meta.url).href;
+  const getImageUrl = () => {
+    return new URL(`${weightImg}`, import.meta.url).href;
   };
 
   const handleWallWeightCreation = (e) => {
@@ -94,7 +94,8 @@ const GridMesh = () => {
       dispatch(addWall({ row: e[0], col: e[1] }));
     }
     if (mouseDown && editWeight) {
-      const imageUrl = getImageUrl("weight.svg");
+      const imageUrl = getImageUrl();
+      console.log("imageUrl", imageUrl);
       const element = document.getElementById(`${row}-${col}`);
       element.style.animation = "animateWeight 0.2s linear";
       element.style.backgroundImage = `url(${imageUrl})`;

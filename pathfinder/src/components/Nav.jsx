@@ -128,7 +128,21 @@ const Nav = () => {
   const clearBoard = () => {
     for (let i = 0; i < 20; i++) {
       for (let j = 0; j < 50; j++) {
+        if (
+          (i === start[0] && j === start[1]) ||
+          (i === end[0] && j === end[1])
+        ) {
+          const element = document.getElementById(`${i}-${j}`);
+          element.style.backgroundColor = "white";
+          element.style.backgroundImage = "none";
+          element.style.animation = "none";
+          continue;
+        }
         const element = document.getElementById(`${i}-${j}`);
+        const imgElement = element.querySelector("img");
+        if (imgElement) {
+          element.removeChild(imgElement);
+        }
         element.style.backgroundColor = "white";
         element.style.backgroundImage = "none";
         element.style.animation = "none";
@@ -178,8 +192,11 @@ const Nav = () => {
 
     for (let weight of weightNodes.values()) {
       const element = document.getElementById(`${weight.row}-${weight.col}`);
-      element.style.backgroundImage = `url(${weightImg})`;
+      // element.style.backgroundImage = `url(${weightImg})`;
       // console.log("image", imageUrl);
+      const imgElement = document.createElement("img");
+      imgElement.src = weightImg;
+      element.appendChild(imgElement);
       element.style.animation = "animateWeight 1s linear";
       dispatch(addWeight({ row: weight.row, col: weight.col }));
     }

@@ -37,7 +37,7 @@ import Dijkstra from "../algorithms/Dijkstra";
 import AStar from "../algorithms/AStar";
 import recursiveDivision from "../mazes/RecursiveDivision";
 import WeightedMaze from "../mazes/WeightedMaze";
-import weightImg from "../assets/weight.svg";
+import weightImg from "../../public/weight.svg";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -166,20 +166,20 @@ const Nav = () => {
     }
   };
 
-  const getImageUrl = (imageName) => {
-    return new URL(`../assets/${imageName}`, import.meta.url).href;
-  };
+  // const getImageUrl = (imageName) => {
+  //   return `&`;
+  // };
 
   const createWeightedMaze = () => {
     clearBoard();
     const weightNodes = new Map();
     WeightedMaze(weightNodes, start, end, sliderVal);
-    const imageUrl = getImageUrl("weight.svg");
+    // const imageUrl = getImageUrl("weight.svg");
 
     for (let weight of weightNodes.values()) {
       const element = document.getElementById(`${weight.row}-${weight.col}`);
-      element.style.backgroundImage = imageUrl;
-      console.log("image", imageUrl);
+      element.style.backgroundImage = `url(${weightImg})`;
+      // console.log("image", imageUrl);
       element.style.animation = "animateWeight 1s linear";
       dispatch(addWeight({ row: weight.row, col: weight.col }));
     }

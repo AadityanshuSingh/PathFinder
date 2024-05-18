@@ -22,10 +22,18 @@ const GridMesh = () => {
   const [startNode, setStartNode] = useState(false);
   const [endNode, setEndNode] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
-  const { start, end, editWall, editWeight, eraseWall, eraseWeight } =
+  const { start, end, editWall, editWeight, eraseWall, eraseWeight, weights } =
     useSelector((state) => state.cell);
   const dispatch = useDispatch();
+  const [weightsNodes, setWeightsNodes] = useState(new Set());
 
+  useEffect(() => {
+    const temp = new Set();
+    for (let weight of weights) {
+      temp.add(`${weight.row}-${weight.col}`);
+    }
+    setWeightsNodes(temp);
+  }, [weights]);
   const startImg =
     end[1] > start[1]
       ? startRightSvg
@@ -74,9 +82,9 @@ const GridMesh = () => {
     }
   };
 
-  const getImageUrl = () => {
-    return new URL(`${weightImg}`, import.meta.url).href;
-  };
+  // const getImageUrl = () => {
+  //   return new URL(`${weightImg}`, import.meta.url).href;
+  // };
 
   const handleWallWeightCreation = (e) => {
     if (startNode || endNode) return;
@@ -94,11 +102,11 @@ const GridMesh = () => {
       dispatch(addWall({ row: e[0], col: e[1] }));
     }
     if (mouseDown && editWeight) {
-      const imageUrl = getImageUrl();
-      console.log("imageUrl", imageUrl);
+      // const imageUrl = getImageUrl();
+      // console.log("imageUrl", imageUrl);
       const element = document.getElementById(`${row}-${col}`);
       element.style.animation = "animateWeight 0.2s linear";
-      element.style.backgroundImage = `url(${imageUrl})`;
+      // element.style.backgroundImage = `url(${imageUrl})`;
       dispatch(addWeight({ row: e[0], col: e[1] }));
     }
   };
@@ -171,6 +179,15 @@ const GridMesh = () => {
                 }}
               />
             </Tooltip>
+          ) : null}
+          {weightsNodes.has(`${i}-${j}`) ? (
+            <Image
+              src={weightImg}
+              id={`${i}-${j}`}
+              w={"100%"}
+              h={"100%"}
+              onClick={handleClick}
+            />
           ) : null}
         </Box>
       );

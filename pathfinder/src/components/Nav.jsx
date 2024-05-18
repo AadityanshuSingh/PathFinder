@@ -81,7 +81,7 @@ const Nav = () => {
         : algorithm === "AStar"
         ? AStar(start, end, wallNode, weightNode)
         : { visited: [], path: [] };
-    console.log("visited", result.visited);
+    // console.log("visited", result.visited);
     dispatch(setVisitedNodes(result.visited));
     dispatch(setPath(result.path));
     // console.log(result.path);
@@ -138,10 +138,6 @@ const Nav = () => {
           continue;
         }
         const element = document.getElementById(`${i}-${j}`);
-        const imgElement = element.querySelector("img");
-        if (imgElement) {
-          element.removeChild(imgElement);
-        }
         element.style.backgroundColor = "white";
         element.style.backgroundImage = "none";
         element.style.animation = "none";
@@ -193,10 +189,7 @@ const Nav = () => {
       const element = document.getElementById(`${weight.row}-${weight.col}`);
       // element.style.backgroundImage = `url(${weightImg})`;
       // console.log("image", imageUrl);
-      const imgElement = document.createElement("img");
-      imgElement.src = weightImg;
-      element.appendChild(imgElement);
-      element.style.animation = "animateWeight 1s linear";
+      element.style.animation = "animateWeight 0.5s linear";
       dispatch(addWeight({ row: weight.row, col: weight.col }));
     }
   };

@@ -1,3 +1,10 @@
+body {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Standard */
+}
+
 @keyframes animateVisitedCell {
   0% {
     background-color: #2e325b;
@@ -47,14 +54,17 @@
 @keyframes animateWeight {
   0% {
     scale: 0;
+    background-color: #67487c;
     animation-timing-function: linear;
   }
   50% {
     scale: 1.2;
+    background-color: #5a3b6c;
     animation-timing-function: linear;
   }
   100% {
     scale: 1;
+    background-color: #3c0659;
     animation-timing-function: linear;
   }
 }

@@ -9,7 +9,7 @@ const Description = () => {
     "Dijkstra's Algorithm is a weighted algorithm that finds the shortest path between nodes in a graph",
     "A* Algorithm is a weighted algorithm that finds the shortest path between nodes in a graph with the help of a heuristic function",
     "Breadth First Search is an unweighted algorithm that finds the shortest path between nodes in a graph",
-    "Depth First Search is an unweighted algorithm the path between nodes in a graph but not necessarily the shortest path",
+    "Depth First Search is an unweighted algorithm that finds the path between nodes in a graph but not necessarily the shortest path",
     "Welcome to Pathfinder! Choose an algorithm and visualize the pathfinding process!",
   ];
 
